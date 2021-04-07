@@ -22,22 +22,22 @@
 " WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-" ================ Ranger =======================
-if exists('g:ranger_choice_file')
-  if empty(glob(g:ranger_choice_file))
-    let s:choice_file_path = g:ranger_choice_file
+" ================ Lf =======================
+if exists('g:lf_choice_file')
+  if empty(glob(g:lf_choice_file))
+    let s:choice_file_path = g:lf_choice_file
   else
-    echom "Message from *Ranger.vim* :"
-    echom "You've set the g:ranger_choice_file variable."
+    echom "Message from *Lf.vim* :"
+    echom "You've set the g:lf_choice_file variable."
     echom "Please use the path for a file that does not already exist."
     echom "Using /tmp/chosenfile for now..."
   endif
 endif
 
-if exists('g:ranger_command_override')
-  let s:ranger_command = g:ranger_command_override
+if exists('g:lf_command_override')
+  let s:lf_command = g:lf_command_override
 else
-  let s:ranger_command = 'ranger'
+  let s:lf_command = 'lf'
 endif
 
 if !exists('s:choice_file_path')
@@ -45,10 +45,10 @@ if !exists('s:choice_file_path')
 endif
 
 if has('nvim')
-  function! OpenRangerIn(path, edit_cmd)
+  function! OpenLfIn(path, edit_cmd)
     let currentPath = expand(a:path)
-    let rangerCallback = { 'name': 'ranger', 'edit_cmd': a:edit_cmd }
-    function! rangerCallback.on_exit(job_id, code, event)
+    let lfCallback = { 'name': 'lf', 'edit_cmd': a:edit_cmd }
+    function! lfCallback.on_exit(job_id, code, event)
       if a:code == 0
         silent! Bclose!
       endif
@@ -63,19 +63,19 @@ if has('nvim')
     endfunction
     enew
     if isdirectory(currentPath)
-      call termopen(s:ranger_command . ' --choosefiles=' . s:choice_file_path . ' "' . currentPath . '"', rangerCallback)
+      call termopen(s:lf_command . ' --choosefiles=' . s:choice_file_path . ' "' . currentPath . '"', lfCallback)
     else
-      call termopen(s:ranger_command . ' --choosefiles=' . s:choice_file_path . ' --selectfile="' . currentPath . '"', rangerCallback)
+      call termopen(s:lf_command . ' --choosefiles=' . s:choice_file_path . ' --selectfile="' . currentPath . '"', lfCallback)
     endif
     startinsert
   endfunction
 else
-  function! OpenRangerIn(path, edit_cmd)
+  function! OpenLfIn(path, edit_cmd)
     let currentPath = expand(a:path)
     if isdirectory(currentPath)
-      silent exec '!' . s:ranger_command . ' --choosefiles=' . s:choice_file_path . ' "' . currentPath . '"'
+      silent exec '!' . s:lf_command . ' --choosefiles=' . s:choice_file_path . ' "' . currentPath . '"'
     else
-      silent exec '!' . s:ranger_command . ' --choosefiles=' . s:choice_file_path . ' --selectfile="' . currentPath . '"'
+      silent exec '!' . s:lf_command . ' --choosefiles=' . s:choice_file_path . ' --selectfile="' . currentPath . '"'
     endif
     if filereadable(s:choice_file_path)
       for f in readfile(s:choice_file_path)
@@ -85,57 +85,57 @@ else
     endif
     redraw!
     " reset the filetype to fix the issue that happens
-    " when opening ranger on VimEnter (with `vim .`)
+    " when opening lf on VimEnter (with `vim .`)
     filetype detect
   endfun
 endif
 
 " For backwards-compatibility (deprecated)
-if exists('g:ranger_open_new_tab') && g:ranger_open_new_tab
+if exists('g:lf_open_new_tab') && g:lf_open_new_tab
   let s:default_edit_cmd='tabedit '
 else
   let s:default_edit_cmd='edit '
 endif
 
-command! RangerCurrentFile call OpenRangerIn("%", s:default_edit_cmd)
-command! RangerCurrentDirectory call OpenRangerIn("%:p:h", s:default_edit_cmd)
-command! RangerWorkingDirectory call OpenRangerIn(".", s:default_edit_cmd)
-command! Ranger RangerCurrentFile
+command! LfCurrentFile call OpenLfIn("%", s:default_edit_cmd)
+command! LfCurrentDirectory call OpenLfIn("%:p:h", s:default_edit_cmd)
+command! LfWorkingDirectory call OpenLfIn(".", s:default_edit_cmd)
+command! Lf LfCurrentFile
 
 " To open the selected file in a new tab
-command! RangerCurrentFileNewTab call OpenRangerIn("%", 'tabedit ')
-command! RangerCurrentFileExistingOrNewTab call OpenRangerIn("%", 'tab drop ')
-command! RangerCurrentDirectoryNewTab call OpenRangerIn("%:p:h", 'tabedit ')
-command! RangerCurrentDirectoryExistingOrNewTab call OpenRangerIn("%:p:h", 'tab drop ')
-command! RangerWorkingDirectoryNewTab call OpenRangerIn(".", 'tabedit ')
-command! RangerWorkingDirectoryExistingOrNewTab call OpenRangerIn(".", 'tab drop ')
-command! RangerNewTab RangerCurrentDirectoryNewTab
+command! LfCurrentFileNewTab call OpenLfIn("%", 'tabedit ')
+command! LfCurrentFileExistingOrNewTab call OpenLfIn("%", 'tab drop ')
+command! LfCurrentDirectoryNewTab call OpenLfIn("%:p:h", 'tabedit ')
+command! LfCurrentDirectoryExistingOrNewTab call OpenLfIn("%:p:h", 'tab drop ')
+command! LfWorkingDirectoryNewTab call OpenLfIn(".", 'tabedit ')
+command! LfWorkingDirectoryExistingOrNewTab call OpenLfIn(".", 'tab drop ')
+command! LfNewTab LfCurrentDirectoryNewTab
 
 " For retro-compatibility
-function! OpenRanger()
-  Ranger
+function! OpenLf()
+  Lf
 endfunction
 
-" Open Ranger in the directory passed by argument
-function! OpenRangerOnVimLoadDir(argv_path)
+" Open Lf in the directory passed by argument
+function! OpenLfOnVimLoadDir(argv_path)
   let path = expand(a:argv_path)
 
   " Delete empty buffer created by vim
   Bclose!
 
-  " Open Ranger
-  call OpenRangerIn(path, 'edit')
+  " Open Lf
+  call OpenLfIn(path, 'edit')
 endfunction
 
-" To open ranger when vim load a directory
-if exists('g:ranger_replace_netrw') && g:ranger_replace_netrw
-  augroup ReplaceNetrwByRangerVim
+" To open lf when vim load a directory
+if exists('g:lf_replace_netrw') && g:lf_replace_netrw
+  augroup ReplaceNetrwByLfVim
     autocmd VimEnter * silent! autocmd! FileExplorer
-    autocmd BufEnter * if isdirectory(expand("%")) | call OpenRangerOnVimLoadDir("%") | endif
+    autocmd BufEnter * if isdirectory(expand("%")) | call OpenLfOnVimLoadDir("%") | endif
   augroup END
 endif
 
-if !exists('g:ranger_map_keys') || g:ranger_map_keys
-  map <leader>f :Ranger<CR>
+if !exists('g:lf_map_keys') || g:lf_map_keys
+  map <leader>f :Lf<CR>
 endif
 
