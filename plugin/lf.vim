@@ -1,5 +1,9 @@
 " Copyright (c) 2015 François Cabrol
+<<<<<<< HEAD:plugin/lf.vim
 " Copyright (c) 2021 Illia Danko
+=======
+" Copyright (c) 2021 Illia Danko (contact@idanko.net)
+>>>>>>> 22aac52f6e434eeeef14d3bf7bce034b4ed32464:plugin/ranger.vim
 "
 " MIT License
 "
@@ -63,21 +67,13 @@ if has('nvim')
       endtry
     endfunction
     enew
-    if isdirectory(currentPath)
-      call termopen(s:lf_command . ' --choosefiles=' . s:choice_file_path . ' "' . currentPath . '"', lfCallback)
-    else
-      call termopen(s:lf_command . ' --choosefiles=' . s:choice_file_path . ' --selectfile="' . currentPath . '"', lfCallback)
-    endif
+    call termopen(s:lf_command . ' -selection-path ' . s:choice_file_path . ' "' . currentPath . '"', lfCallback)
     startinsert
   endfunction
 else
   function! OpenLfIn(path, edit_cmd)
     let currentPath = expand(a:path)
-    if isdirectory(currentPath)
-      silent exec '!' . s:lf_command . ' --choosefiles=' . s:choice_file_path . ' "' . currentPath . '"'
-    else
-      silent exec '!' . s:lf_command . ' --choosefiles=' . s:choice_file_path . ' --selectfile="' . currentPath . '"'
-    endif
+    silent exec '!' s:lf_command . ' -selection-path ' . s:choice_file_path . ' "' . currentPath . '"'
     if filereadable(s:choice_file_path)
       for f in readfile(s:choice_file_path)
         exec a:edit_cmd . f
