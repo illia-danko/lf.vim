@@ -1,9 +1,5 @@
 " Copyright (c) 2015 François Cabrol
-<<<<<<< HEAD:plugin/lf.vim
-" Copyright (c) 2021 Illia Danko
-=======
 " Copyright (c) 2021 Illia Danko (contact@idanko.net)
->>>>>>> 22aac52f6e434eeeef14d3bf7bce034b4ed32464:plugin/ranger.vim
 "
 " MIT License
 "
