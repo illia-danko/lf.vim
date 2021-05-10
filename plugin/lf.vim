@@ -1,4 +1,5 @@
 " Copyright (c) 2015 François Cabrol
+" Copyright (c) 2021 Illia Danko
 "
 " MIT License
 "
