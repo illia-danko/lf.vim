@@ -14,6 +14,12 @@ Install it with your favorite plugin manager. Example with vim-plug:
 
         Plug 'idanko/lf.vim'
 
+### Optional dependency
+
+If you use neovim, you may want to add bclose.vim plugin (see a section below):
+
+        Plug 'rbgrouleff/bclose.vim'
+
 How to use it
 -------------
 
@@ -59,6 +65,8 @@ If you want to see vim opening LF when you open a directory (ex: nvim ./dir or :
 let g:NERDTreeHijackNetrw = 0 // add this line if you use NERDTree
 let g:lf_replace_netrw = 1 // open LF when vim open a directory
 ```
+
+In order for this to work you need to install the bclose.vim plugin (see above).
 
 ### Setting an other path for the temporary file
 lf.vim uses a temporary file to store the path that was chosen, `/tmp/chosenfile` by default.
