@@ -12,7 +12,7 @@ Installation
 
 Install it with your favorite plugin manager. Example with vim-plug:
 
-        Plug 'idanko/lf.vim'
+        Plug 'elijahdanko/lf.vim'
 
 ### Optional dependency
 
